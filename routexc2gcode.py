@@ -1,55 +1,79 @@
 #!/usr/bin/python3
-# Tento program jest svobodný software a je prevodnikem routovaciho excellonu do G-code (beznych frezek)
-# autor: Vladimir Cerny
-# email: cernyv.pdp7@gmail.com
-# licence GPLv3
-# verze 1.1
+#
+# Prevodnik routovaciho excellonu do G-code (beznych frezek)
+#
+#   autor: Vladimir Cerny
+#   email: cernyv.pdp7@gmail.com
+# licence: GPLv3
+#   verze: 1.1
+#
 
-import os
+import os,sys
 import datetime
 
-# definice promennych
+#
+# Promenne
+#
 
-dir = "D:/cnc"
-print("Vychozi cesta zdroje D:\\cnc")
-zdrojovy = input("Zadej nazev zdrojoveho souboru: ")
-cela_cesta_vstupu = os.path.join(dir,zdrojovy)
-dir2 = "D:/cnc/gcode"
-print("Vychozi cesta cile D:\\cnc\\gcode", "Existujici soubory prepise!", sep=os.linesep)
-vystupni = input("Zadej nazev vystupniho souboru: ")
-cela_cesta_vystupu = os.path.join(dir2,vystupni)
-otacky = input("Zadej otacky vretene, [vychozi 20000]: ") or "20000"
-feedrate = input("Zadej feedrate, [vychozi F300]: ") or "F300"
-moveZ = input("Zadej vysku prejezdu nad DPS, [vychozi 5]: ") or "5"
-milldepth = input("Zadej hloubku frezovani, [vychozi -2]: ") or "-2"
-nastroj_c = input("Zadej cislo nastroje, [vychozi 1]: ") or "1"
-safeZ = input("Zadej vysku zvednuti Z na konci programu, [vychozi 40]: ") or "40"
+cesta_vstupu = "D:/cnc"
+cesta_vystupu = "D:/cnc/gcode"
+
 today = datetime.datetime.now()
 
-# urceni vystupniho souboru
+#
+# Inicializace
+#
 
-out = open(f"{cela_cesta_vystupu}", "w")
+print("\nroutexc2gcode\n")
 
-out.write("; "+f"{today}\n")
+print("Adresář zdroje [" + cesta_vstupu + "]\n")
 
-hlavicka = """; Generovano v routexc2gcode.py
+zdrojovy_soubor = input("[*] Zadej nazev zdrojoveho souboru: ")
+cela_cesta_vstupu = os.path.join(cesta_vstupu, zdrojovy_soubor)
 
-; Vyber nastroj
+print("\nAdresář cíle [" + cesta_vystupu + "]\n")
+
+vystupni = input("[*] Název výstupního souboru: ")
+cela_cesta_vystupu = os.path.join(cesta_vystupu, vystupni)
+
+otacky = input("[*] Otáčky vřetene [20000]: ") or "20000"
+feedrate = input("[*] Feedrate [F300]: ") or "F300"
+moveZ = input("[*] Výška přejezdu nad DPS [5]: ") or "5"
+milldepth = input("[*] Hloubka frézování [-2]: ") or "-2"
+nastroj_c = input("[*] Číslo nástroje [1]: ") or "1"
+safeZ = input("[*] Výška zvednutí Z na konci programu [40]: ") or "40"
+
+hlavicka = """; Generováno v routexc2gcode.py
+
+; Vyber nástroj
 T"""+str(nastroj_c)+"""M6
-; Spust vreteno
+; Spusť vřeteno
 S"""+str(otacky)+"""M3
-; Zvednuti Z po startu
+; Zvednutí Z po startu
 G00 Z5
 """
 
 paticka = """
-; zastav vreteno
+; zastav vřeteno
 M5
-; vyjeti vretene a konec frezovani
+; vyjetí vřetene a konec frézovaní
 G00 Z"""+str(safeZ)+"""
 ; konec programu
 M2
 """
+
+start = input("\nPokračovat [y/n]: ")
+
+if start != "y": sys.exit(1)
+
+#
+# Hlavni kod
+#
+
+# urceni vystupniho souboru
+
+out = open(f"{cela_cesta_vystupu}", "w")
+out.write("; "+f"{today}\n")
 
 # zapis hlavicky
 out.write(hlavicka)
@@ -86,4 +110,7 @@ out.write(paticka)
 # uzavreni vystupu
 out.close()
 
-print("Hotovo...")
+print("Hotovo.")
+
+sys.exit(0)
+
