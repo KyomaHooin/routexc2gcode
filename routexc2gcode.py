@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 #
-# Prevodnik routovaciho excellonu do G-code (beznych frezek)
+# Převodník routovacího Excellonu do G-code (běžných frézek)
 #
 #   autor: Vladimir Cerny
 #   email: cernyv.pdp7@gmail.com
@@ -28,7 +28,7 @@ print("\nroutexc2gcode\n")
 
 print("Adresář zdroje [" + cesta_vstupu + "]\n")
 
-zdrojovy_soubor = input("[*] Zadej nazev zdrojoveho souboru: ")
+zdrojovy_soubor = input("[*] Název zdrojového souboru: ")
 cela_cesta_vstupu = os.path.join(cesta_vstupu, zdrojovy_soubor)
 
 print("\nAdresář cíle [" + cesta_vystupu + "]\n")
@@ -36,7 +36,7 @@ print("\nAdresář cíle [" + cesta_vystupu + "]\n")
 vystupni = input("[*] Název výstupního souboru: ")
 cela_cesta_vystupu = os.path.join(cesta_vystupu, vystupni)
 
-otacky = input("[*] Otáčky vřetene [20000]: ") or "20000"
+otacky = input("\n[*] Otáčky vřetene [20000]: ") or "20000"
 feedrate = input("[*] Feedrate [F300]: ") or "F300"
 moveZ = input("[*] Výška přejezdu nad DPS [5]: ") or "5"
 milldepth = input("[*] Hloubka frézování [-2]: ") or "-2"
