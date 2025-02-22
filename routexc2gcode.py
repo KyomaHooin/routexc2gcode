@@ -60,7 +60,7 @@ M2
 
 #
 # Hlavní kód
-
+#
 # pohyb vřetene
 # moveZ ekvivaletní k M16 v Excellonu
 # M15 se vyjádří, G00 následuje G01 se stejnou souřadnicí a pohybem Z dolu (obvykle)
@@ -92,7 +92,7 @@ try:
       #
       if line.startswith("G00"):
         if line.strip() == 'G00XY':
-          out.write("G01" + re.sub('^(.*)\s+?Z.*$','\\1', XY)) # odstraní Z souřadnici
+          out.write("G01" + re.sub('^(.*)\s+?Z.*$','\\1', XY))# odstraní Z souřadnici
         else:
           out.write(line)
           out.write("G01" + line.strip()[3:] + "Z" + milldepth + feedrate + "\n")
@@ -111,13 +111,13 @@ try:
       # M15
       #
       #if line.startswith("M15"):
-      #  print(milldepth, "; Vreteno dolu")
+      #  print(milldepth, "; Vřeteno dolu")
       #  milldepth = "Z-2"
       #
       # M16
       #
       if line.startswith("M16"):
-        out.write("Z" + moveZ + " " + "; Vreteno nahoru\n")
+        out.write("Z" + moveZ + " " + "; Vřeteno nahoru\n")
       #
       # G40
       #
