@@ -29,7 +29,7 @@ INPUT_FILE = input("[*] Název zdrojového souboru: ")
 OUTPUT_DIR = input("[*] Název výstupního adresáře [D:/cnc/gcode]: ") or "D:/cnc/gcode"
 OUTPUT_FILE = input("[*] Název výstupního souboru [test.gcode]: ") or "test.gcode"
 
-print("\n")
+print()
 
 otacky = input("[*] Otáčky vřetene [20000]: ") or "20000"
 feedrate = input("[*] Feedrate [F300]: ") or "F300"
@@ -37,6 +37,8 @@ moveZ = input("[*] Výška přejezdu nad DPS [5]: ") or "5"
 milldepth = input("[*] Hloubka frézování [-2]: ") or "-2"
 nastroj_c = input("[*] Číslo nástroje [1]: ") or "1"
 safeZ = input("[*] Výška zvednutí Z na konci programu [40]: ") or "40"
+
+print()
 
 # Hlavička
 HEADER = """; Generováno v routexc2gcode.py
@@ -69,14 +71,14 @@ M2
 XY='XY'
 
 # test běhu
-while RUN not in ('y','n'): RUN = input("\nPokračovat [y/n]: ")
+while RUN not in ('y','n'): RUN = input("Pokračovat [y/n]: ")
 if RUN == "n": sys.exit(1)
 
 # určení výstupního souboru
 try:
   out = open(os.path.join(OUTPUT_DIR, OUTPUT_FILE), "w")
 except:
-  print("\nNelze otevřít výstupní soubor.")   
+  print("Nelze otevřít výstupní soubor.")   
   sys.exit(1)
 
 # zápis hlavičky
