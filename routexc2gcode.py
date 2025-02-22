@@ -11,7 +11,7 @@ import sys,os,re
 from datetime import datetime
 
 #
-# Promenne
+# Proměnné
 #
 
 VERSION='1.2'
@@ -43,9 +43,9 @@ safeZ = input("[*] Výška zvednutí Z na konci programu [40]: ") or "40"
 hlavicka = """; Generováno v routexc2gcode.py
 
 ; Vyber nástroj
-T""" + str(nastroj_c) + """M6
+T""" + nastroj_c + """M6
 ; Spusť vřeteno
-S""" + str(otacky) + """M3
+S""" + otacky + """M3
 ; Zvednutí Z po startu
 G00 Z5
 """
@@ -54,39 +54,39 @@ paticka = """
 ; zastav vřeteno
 M5
 ; vyjetí vřetene a konec frézovaní
-G00 Z""" + str(safeZ) + """
+G00 Z""" + safeZ + """
 ; konec programu
 M2
 """
 
+#
+# Hlavní kód
+#
+
 while RUN not in ('y','n'): RUN = input("\nPokračovat [y/n]: ")
 if RUN == "n": sys.exit(1)
 
-#
-# Hlavni kod
-#
-
-# urceni vystupniho souboru
-out = open(f"{cela_cesta_vystupu}", "w")
+# určení výstupního souboru
+out = open(cela_cesta_vystupu, "w")
 out.write("; " + datetime.now().strftime('%m/%d/%Y %H:%M:%S') + "\n")
 
-# zapis hlavicky
+# zápis hlavičky
 out.write(hlavicka)
 
-# pohyb vretene
-# moveZ ekvivaletni k M16 v exellonu
-# M15 se vyjadri, G00 nasleduje G01 se stejnou souradnici a pohybem Z dolu (obvykle)
+# pohyb vřetene
+# moveZ ekvivaletní k M16 v Excellonu
+# M15 se vyjádří, G00 následuje G01 se stejnou souřadnicí a pohybem Z dolu (obvykle)
 
-# Posledni souradnice G01
+# Poslední souřadnice G01
 XY='XY'
 
-with open(f"{cela_cesta_vstupu}") as f:
+with open(cela_cesta_vstupu, "r") as f:
   line = f.readline()
   while line:
     line = f.readline()
     if line.startswith("G00"):
       if line.strip() == 'G00XY':
-        out.write("G01" + re.sub('^(.*)\s+Z.*$','\\1', XY)) # odstraní Z souřadnici
+        out.write("G01" + re.sub('^(.*)\s+?Z.*$','\\1', XY)) # odstraní Z souřadnici
       else:
         out.write(line)
         out.write("G01" + line.strip()[3:] + "Z" + milldepth+feedrate + "\n")
@@ -106,10 +106,10 @@ with open(f"{cela_cesta_vstupu}") as f:
       break
 f.close()
 
-# zapis paticky
+# zápis patičky
 out.write(paticka)
 
-# uzavreni vystupu
+# uzavření výstupu
 out.close()
 
 print("Hotovo.")
