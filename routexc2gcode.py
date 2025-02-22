@@ -95,7 +95,7 @@ try:
           out.write("G01" + re.sub('^(.*)\s+?Z.*$','\\1', XY)) # odstraní Z souřadnici
         else:
           out.write(line)
-          out.write("G01" + line.strip()[3:] + "Z" + milldepth+feedrate + "\n")
+          out.write("G01" + line.strip()[3:] + "Z" + milldepth + feedrate + "\n")
       #
       # G01
       #
