@@ -130,7 +130,6 @@ try:
       #
       if line.startswith("M30"):
         break
-  f.close()
 except:
   print("Nelze načíst vstupní soubor.")
 
