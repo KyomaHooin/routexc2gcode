@@ -93,8 +93,9 @@ try:
       # G00 
       #
       if line.startswith("G00"):
-        if line.strip() == 'G00XY':
-          out.write("G01" + re.sub('^(.*)\s+?Z.*$','\\1', XY))# odstraní Z souřadnici
+        if line.strip() == 'G00XY': # ošetření výrazu G00XY generovaného FAB3000
+          out.write("G00" + re.sub('^(.*)\\s+?Z.*$','\\1', XY)) # odstraní Z souřadnici          
+          out.write("G01" + re.sub('^(.*)\\s+?Z.*$','\\1', XY).strip() + "Z" + milldepth + feedrate + "\n")
         else:
           out.write(line)
           out.write("G01" + line.strip()[3:] + "Z" + milldepth + feedrate + "\n")
