@@ -14,7 +14,7 @@ from datetime import datetime
 # Proměnné
 #
 
-VERSION='1.3'
+VERSION='1.4'
 RUN=None
 
 #
@@ -37,6 +37,10 @@ moveZ = input("[*] Výška přejezdu nad DPS [5]: ") or "5"
 milldepth = input("[*] Hloubka frézování [-2]: ") or "-2"
 nastroj_c = input("[*] Číslo nástroje [1]: ") or "1"
 safeZ = input("[*] Výška zvednutí Z na konci programu [40]: ") or "40"
+chlazeni = input ("[*] Chlazení vřetene y/n? [n]: ") or ""
+
+# Chlazení
+if chlazeni == "y": chlazeni = "M8"
 
 print()
 
@@ -49,7 +53,9 @@ T""" + nastroj_c + """M6
 S""" + otacky + """M3
 ; Zvednutí Z po startu
 G00 Z5
-"""
+; Chlazení
+""" + chlazeni
+
 # Patička
 FOOTER = """
 ; zastav vřeteno
@@ -58,7 +64,8 @@ M5
 G00 Z""" + safeZ + """
 ; konec programu
 M2
-"""
+; Chlazení
+""" + chlazeni.replace('8','9')
 
 #
 # Hlavní kód
