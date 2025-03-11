@@ -49,23 +49,23 @@ HEADER = """; Generováno v routexc2gcode.py
 
 ; Vyber nástroj
 T""" + nastroj_c + """M6
+; Chlazení
+""" + chlazeni + """
 ; Spusť vřeteno
 S""" + otacky + """M3
 ; Zvednutí Z po startu
-G00 Z5
-; Chlazení
-""" + chlazeni
+G00 Z5"""
 
 # Patička
 FOOTER = """
+; Chlazení
+""" + chlazeni.replace('8','9') + """
 ; zastav vřeteno
 M5
 ; vyjetí vřetene a konec frézovaní
 G00 Z""" + safeZ + """
 ; konec programu
-M2
-; Chlazení
-""" + chlazeni.replace('8','9')
+M2"""
 
 #
 # Hlavní kód
