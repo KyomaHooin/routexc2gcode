@@ -47,6 +47,7 @@ def oblouk(x1,y1,x2,y2,r):
   # výpočet X,Y souřadnic středu oblouku
   centerX = round(Sx + h * mikroNX, 4)
   centerY = round(Sy - h * mikroNY, 4)
+
   # výpočet I, J
   I = centerX - x1
   J = y1 - centerY
@@ -154,11 +155,11 @@ try:
       if line.startswith("G02"):
         LAST_G02 = line[3:] # ulozeni hodnoty pro G03
         prefix = line[:3]
-        x1 = float(re.sub('^X(.*)Y.*$','\\1', LAST_G01))
+        x1 = float(re.sub('^.*X(.*)Y.*$','\\1', LAST_G01))
         y1 = float(re.sub('^.*Y(.*)$','\\1', LAST_G01).split('Z')[0].strip())
-        x2 = float(re.sub('^X(.*)Y.*$','\\1', line[3:]))
-        y2 = float(re.sub('^.*Y(.*)$','\\1', line[3:]).split('A')[0].strip())
-        r = float(re.sub('^.*A(.*)$','\\1', line[3:]).strip())
+        x2 = float(re.sub('^.*X(.*)Y.*$','\\1', line))
+        y2 = float(re.sub('^.*Y(.*)$','\\1', line).split('A')[0].strip())
+        r = float(re.sub('^.*A(.*)$','\\1', line).strip())
         out.write(prefix + oblouk(x1, y1, x2, y2, r))
       #
       # G03
@@ -167,9 +168,9 @@ try:
          prefix = line[:3]
          x1 = float(re.sub('^X(.*)Y.*$','\\1', LAST_G02))
          y1 = float(re.sub('^.*Y(.*)$','\\1', LAST_G02).split('A')[0].strip())
-         x2 = float(re.sub('^X(.*)Y.*$','\\1', line[3:]))
-         y2 = float(re.sub('^.*Y(.*)$','\\1', line[3:]).split('A')[0].strip())
-         r = float(re.sub('^.*A(.*)$','\\1', line[3:]).strip())
+         x2 = float(re.sub('^.*X(.*)Y.*$','\\1', line))
+         y2 = float(re.sub('^.*Y(.*)$','\\1', line).split('A')[0].strip())
+         r = float(re.sub('^.*A(.*)$','\\1', line).strip())
          out.write(prefix + oblouk(x1, y1, x2, y2, r))
       #
       # X* Y*
