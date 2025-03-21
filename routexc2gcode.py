@@ -29,10 +29,10 @@ def oblouk(x1,y1,x2,y2,r):
   Sy = (y1 + y2) / 2
  
   # rozdíl mezi body oblouku v X
-  rozdilX = x1 - x2
+  rozdilX = x2 - x1
  
   # rozdíl mezi body oblouku v Y
-  rozdilY = y1 - y2
+  rozdilY = y2 - y1
  
   # délka poloviční tětivy (střed úsečky mezi koncovými body oblouku, bod "S")
   d = math.sqrt(math.pow(-rozdilX, 2) + rozdilY**2) / 2
