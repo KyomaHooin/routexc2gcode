@@ -159,7 +159,7 @@ try:
         y1 = float(re.sub('^.*Y(.*)$','\\1', LAST).split('Z')[0].strip())
         x2 = float(re.sub('^.*X(.*)Y.*$','\\1', line))
         y2 = float(re.sub('^.*Y(.*)A.*$','\\1', line).split('A')[0].strip())
-        r =  float(re.sub('^.*A(.*)$','\\1', line).strip())
+        r = float(re.sub('^.*A(.*)$','\\1', line).strip())
 
         out.write(line[:3] + "X" + str(x2) + "Y" + str(y2) + oblouk(x1, y1, x2, y2, r, line[:3]) + feedrate + "\n")
         LAST = line # uložení poslední souřednice
@@ -204,7 +204,7 @@ try:
 except:
   print("Nelze načíst vstupní soubor.")
 #except Exception as e:
-#	print('Something bad ' + e.args[0])
+#	print('Něco se pokazilo: ' + e.args[0])
 
 # zápis patičky
 out.write(FOOTER)
