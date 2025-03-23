@@ -15,6 +15,7 @@ from datetime import datetime
 #
 
 VERSION='1.5'
+
 LAST=None # poslední pozice
 RUN=None
 
@@ -52,6 +53,7 @@ def oblouk(x1,y1,x2,y2,r,pref):
   if 'G03' in pref:
     centerX = round(Sx - h * mikroNX, 4)
     centerY = round(Sy + h * mikroNY, 4)
+
   # výpočet I, J
   I = centerX - x1
   J = centerY - y1
