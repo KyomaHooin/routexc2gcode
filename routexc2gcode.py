@@ -54,7 +54,7 @@ def oblouk(x1,y1,x2,y2,r,pref):
     centerY = round(Sy + h * mikroNY, 4)
   # výpočet I, J
   I = centerX - x1
-  J = y1 - centerY
+  J = centerY - y1
 
   return "I" + str(I) + "J" + str(J)
 
@@ -95,7 +95,8 @@ T""" + nastroj_c + """M6
 ; Spusť vřeteno
 S""" + otacky + """M3
 ; Zvednutí Z po startu
-G00 Z5"""
+G00 Z""" + moveZ + """
+"""
 
 # Patička
 FOOTER = """
@@ -145,11 +146,12 @@ try:
         else:
           out.write(line)
           out.write("G01" + line[3:].strip() + "Z" + milldepth + feedrate + "\n")
+          LAST = line # uložení poslední souřednice
       #
       # G01
       #
       if line.startswith("G01"):
-        out.write(line[3:])
+        out.write(line)
         LAST = line # uložení poslední souřednice
       #
       # G02
@@ -161,7 +163,7 @@ try:
         y2 = float(re.sub('^.*Y(.*)$','\\1', line).split('A')[0].strip())
         r = float(re.sub('^.*A(.*)$','\\1', line).strip())
 
-        out.write(line[:3] + "X" + str(x2) + "Y" + str(y2) + oblouk(x1, y1, x2, y2, r, line[:3]) + feedrate + "\n")
+        out.write(line[:3] + "X" + str(x2) + "Y" + str(y2) + "Z" + milldepth + oblouk(x1, y1, x2, y2, r, line[:3]) + feedrate + "\n")
         LAST = line # uložení poslední souřednice
       #
       # G03
@@ -173,13 +175,14 @@ try:
         y2 = float(re.sub('^.*Y(.*)$','\\1', line).split('A')[0].strip())
         r = float(re.sub('^.*A(.*)$','\\1', line).strip())
 
-        out.write(line[:3] + "X" + str(x2) + "Y" + str(y2) + oblouk(x1, y1, x2, y2, r, line[:3]) + feedrate + "\n")
+        out.write(line[:3] + "X" + str(x2) + "Y" + str(y2) + "Z" + milldepth + oblouk(x1, y1, x2, y2, r, line[:3]) + feedrate + "\n")
         LAST = line # uložení poslední souřednice
       #
       # X* Y*
       #
       if line.startswith(("X","Y")):
         out.write(line)
+        LAST = line # uložení poslední souřednice
       #
       # M15
       #
@@ -204,7 +207,7 @@ try:
 except:
   print("Nelze načíst vstupní soubor.")
 #except Exception as e:
-#	print('Něco se pokazilo: ' + e.args[0])
+#  print('Něco se pokazilo: ' + e.args[0])
 
 # zápis patičky
 out.write(FOOTER)
