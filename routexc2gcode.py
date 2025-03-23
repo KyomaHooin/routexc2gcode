@@ -143,18 +143,18 @@ try:
       #
       if line.startswith("G00"):
         if line.strip() == 'G00XY': # ošetření výrazu G00XY generovaného FAB3000
-          out.write("G00" + LAST[3:].split('Z')[0].strip())          
+          out.write("G00" + LAST[3:].split('Z')[0].strip() + "\n")          
           out.write("G01" + LAST[3:].split('Z')[0].strip() + "Z" + milldepth + feedrate + "\n")
         else:
           out.write(line)
           out.write("G01" + line[3:].strip() + "Z" + milldepth + feedrate + "\n")
-          LAST = line # uložení poslední souřednice
+          LAST = line # uložení poslední souřadnice
       #
       # G01
       #
       if line.startswith("G01"):
-        out.write(line)
-        LAST = line # uložení poslední souřednice
+        out.write(line.strip() + "Z" + milldepth + feedrate + "\n")
+        LAST = line # uložení poslední souřadnice
       #
       # G02
       #
@@ -166,7 +166,7 @@ try:
         r = float(re.sub('^.*A(.*)$','\\1', line).strip())
 
         out.write(line[:3] + "X" + str(x2) + "Y" + str(y2) + "Z" + milldepth + oblouk(x1, y1, x2, y2, r, line[:3]) + feedrate + "\n")
-        LAST = line # uložení poslední souřednice
+        LAST = line # uložení poslední souřadnice
       #
       # G03
       #
@@ -178,13 +178,13 @@ try:
         r = float(re.sub('^.*A(.*)$','\\1', line).strip())
 
         out.write(line[:3] + "X" + str(x2) + "Y" + str(y2) + "Z" + milldepth + oblouk(x1, y1, x2, y2, r, line[:3]) + feedrate + "\n")
-        LAST = line # uložení poslední souřednice
+        LAST = line # uložení poslední souřadnice
       #
       # X* Y*
       #
       if line.startswith(("X","Y")):
         out.write(line)
-        LAST = line # uložení poslední souřednice
+        LAST = line # uložení poslední souřadnice
       #
       # M15
       #
