@@ -158,7 +158,7 @@ try:
       #
       if line.startswith("G02"):
         x1 = float(re.sub('^.*X(.*)Y.*$','\\1', LAST))
-        y1 = float(re.sub('^.*Y(.*)$','\\1', LAST).split('Z')[0].strip())
+        y1 = float(re.sub('^.*Y(.*)$','\\1', LAST).split('Z')[0].split('A')[0].strip())
         x2 = float(re.sub('^.*X(.*)Y.*$','\\1', line))
         y2 = float(re.sub('^.*Y(.*)$','\\1', line).split('A')[0].strip())
         r = float(re.sub('^.*A(.*)$','\\1', line).strip())
@@ -170,7 +170,7 @@ try:
       #
       if line.startswith("G03"):
         x1 = float(re.sub('^.*X(.*)Y.*$','\\1', LAST))
-        y1 = float(re.sub('^.*Y(.*)$','\\1', LAST).split('A')[0].strip())
+        y1 = float(re.sub('^.*Y(.*)$','\\1', LAST).split('Z')[0].split('A')[0].strip())
         x2 = float(re.sub('^.*X(.*)Y.*$','\\1', line))
         y2 = float(re.sub('^.*Y(.*)$','\\1', line).split('A')[0].strip())
         r = float(re.sub('^.*A(.*)$','\\1', line).strip())
