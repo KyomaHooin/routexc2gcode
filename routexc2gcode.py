@@ -24,7 +24,6 @@ RUN=None
 #
 
 def coord(coord,unit,zero,decimal,pos,dec):
-
   X = coord[1:].split('Y')[0]
   Y = coord.split('Y')[1]
 
@@ -32,13 +31,12 @@ def coord(coord,unit,zero,decimal,pos,dec):
   if decimal == 'y' and '.' not in coord: return '' # prázdny vystup..
 
   # NON-DECIMAL
-  if decimal == 'n':
-    if zero == 't':# TRAILING ZERO
-      X = X[:-dec] + '.' + X[-dec:]
-      Y = Y[:-dec] + '.' + Y[-dec:]
-    if zero == 'l':# LEADING ZERO
-      X = X[:pos] + '.' + X[pos:]
-      Y = Y[:pos] + '.' + Y[pos:]
+  if zero == 't':# TRAILING ZERO
+    X = X[:-dec] + '.' + X[-dec:]
+    Y = Y[:-dec] + '.' + Y[-dec:]
+  if zero == 'l':# LEADING ZERO
+    X = X[:pos] + '.' + X[pos:]
+    Y = Y[:pos] + '.' + Y[pos:]
 
   return 'X' + str(round(float(X) * unit, 4)) + 'Y' + str(round(float(Y) * unit, 4))
 
