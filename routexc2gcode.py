@@ -23,6 +23,29 @@ RUN=None
 # Funkce
 #
 
+def coord(coord,unit,zero,decimal,pos,dec):
+
+  X = coord[1:].split('Y')[0]
+  Y = coord.split('Y')[1]
+
+  # DECIMAL
+  if decimal == 'y' and '.' not in coord: return '' # prázdny vystup..
+
+  # NON-DECIMAL
+  if decimal == 'n':
+
+    if zero == 't':# TRAILING ZERO
+
+      X = X[:-dec] + '.' + X[-dec:]
+      Y = Y[:-dec] + '.' + Y[-dec:]
+
+  if zero == 'l':# LEADING ZERO
+
+      X = X[:pos] + '.' + X[pos:]
+      Y = Y[:pos] + '.' + Y[pos:]
+
+  return 'X' + str(round(float(X) * unit, 4)) + 'Y' + str(round(float(Y) * unit, 4))
+
 def oblouk(x1,y1,x2,y2,r,pref):
   # střed úsečky v X
   Sx = (x1 + x2) / 2
@@ -86,6 +109,27 @@ chlazeni = input ("[*] Chlazení vřetene y/n? [n]: ") or ""
 if chlazeni == "y": chlazeni = "M8"
 
 print()
+print("Fromát souřadnic:")
+print()
+
+# Jednotky INCH/METRIC
+unit=None
+while unit not in ('mm','inch'): unit = input("[*] Jednotky [mm/inch]: ")
+unit = 1 if unit == 'mm' else 25.4
+# Zeros LZ/TZ
+zero=None
+while zero not in ('l','t'): zero = input("[*] Trailing or leading nuly? [l/t]: ")
+# Decimal
+decimal=None
+while decimal not in ('y','n'): decimal = input ("[*] Desetinná značka? [y/n]: ")
+# Čislice
+pos = int(input("[*] Počet celých číslic? [3]: ") or 3)
+dec = int(input("[*] Počet desetinných číslic? [3]: ") or 3)
+
+print()
+
+#print(coord('X520130Y500200',unit,zero,decimal,pos,dec))
+#sys.exit(1)
 
 # Hlavička
 HEADER = """; Generováno v routexc2gcode.py
