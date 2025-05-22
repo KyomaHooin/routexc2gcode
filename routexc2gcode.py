@@ -33,14 +33,10 @@ def coord(coord,unit,zero,decimal,pos,dec):
 
   # NON-DECIMAL
   if decimal == 'n':
-
     if zero == 't':# TRAILING ZERO
-
       X = X[:-dec] + '.' + X[-dec:]
       Y = Y[:-dec] + '.' + Y[-dec:]
-
-  if zero == 'l':# LEADING ZERO
-
+    if zero == 'l':# LEADING ZERO
       X = X[:pos] + '.' + X[pos:]
       Y = Y[:pos] + '.' + Y[pos:]
 
@@ -118,7 +114,7 @@ while unit not in ('mm','inch'): unit = input("[*] Jednotky [mm/inch]: ")
 unit = 1 if unit == 'mm' else 25.4
 # Zeros LZ/TZ
 zero=None
-while zero not in ('l','t'): zero = input("[*] Trailing or leading nuly? [l/t]: ")
+while zero not in ('l','t'): zero = input("[*] Vedoucí, nebo koncové nuly? [l/t]: ")
 # Decimal
 decimal=None
 while decimal not in ('y','n'): decimal = input ("[*] Desetinná značka? [y/n]: ")
