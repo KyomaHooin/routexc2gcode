@@ -29,6 +29,7 @@ def coord(coord,unit,zero,decimal,pos,dec):
 
   # DECIMAL
   if decimal == 'y' and '.' not in coord: return '' # prázdny vystup..
+  if decimal == 'y': return coord
 
   # NON-DECIMAL
   if zero == 't':# TRAILING ZERO
