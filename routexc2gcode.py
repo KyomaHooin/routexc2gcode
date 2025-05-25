@@ -25,11 +25,11 @@ RUN=None
 #
 
 def coord(coord,unit,zero,decimal,pos,dec):
-  X = coord[1:].split('Y')[0]
-  Y = coord.split('Y')[1]
+  X = coord.group(2)[1:].split('Y')[0]
+  Y = coord.group(2).split('Y')[1]
 
   # DECIMAL
-  if decimal == 'y': return coord
+  if decimal == 'y': return coord.group(0)# řádek bez změny
 
   # NON-DECIMAL
   if zero == 't':# TRAILING ZERO
@@ -39,7 +39,7 @@ def coord(coord,unit,zero,decimal,pos,dec):
     X = X[:pos] + '.' + X[pos:]
     Y = Y[:pos] + '.' + Y[pos:]
 
-  return 'X' + str(round(float(X) * unit, 4)) + 'Y' + str(round(float(Y) * unit, 4))
+  return coord.group(1) + 'X' + str(round(float(X) * unit, 4)) + 'Y' + str(round(float(Y) * unit, 4)) + coord.group(3)
 
 def oblouk(x1,y1,x2,y2,r,pref):
   # střed úsečky v X
@@ -123,9 +123,6 @@ dec = int(input("[*] Počet desetinných číslic? [3]: ") or 3)
 
 print()
 
-#print(coord('X520130Y500200',unit,zero,decimal,pos,dec))
-#sys.exit(1)
-
 # Hlavička
 HEADER = """; Generováno v routexc2gcode.py
 
@@ -176,9 +173,9 @@ if CONV_RUN == "y":
   try:
     with open(os.path.join(INPUT_DIR, INPUT_FILE), "r") as f:
       for line in f:
-        match = re.match('^.*(X\d+\.?\d+Y\d+\.?\d+).*$', line)# řádek obsahuje numerickou souřadnici XY
+        match = re.match('^(.*)(X\d+\.?\d+Y\d+\.?\d+)(.*)$', line)# řádek obsahuje numerickou souřadnici XY
         if match:
-          out.write(re.sub('^.*(X\d+\.?\d+Y\d+\.?\d+).*$', coord(match.group(),unit.zero,decimal,pos,dec), line))
+          out.write(coord(match,unit,zero,decimal,pos,dec))
         else:
           out.write(line)
   except:
