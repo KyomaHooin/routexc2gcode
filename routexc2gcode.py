@@ -14,7 +14,7 @@ from datetime import datetime
 # Proměnné
 #
 
-VERSION='1.5'
+VERSION='1.6'
 
 LAST=None # poslední pozice
 CONV_RUN=None
