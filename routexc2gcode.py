@@ -167,7 +167,7 @@ if CONV_RUN == "y":
 
   # určení výstupního souboru konverze souřadnic
   try:
-    out = open(os.path.join(OUTPUT_DIR, OUTPUT_FILE + '.conv'), "w")
+    out = open(os.path.join(INPUT_DIR, INPUT_FILE + '.conv'), "w")
   except:
     print("Nelze otevřít výstupní soubor koverze.")   
     sys.exit(1)
