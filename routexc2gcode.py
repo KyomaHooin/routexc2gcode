@@ -17,6 +17,7 @@ from datetime import datetime
 VERSION='1.5'
 
 LAST=None # poslední pozice
+CONV_RUN=None
 RUN=None
 
 #
@@ -28,7 +29,6 @@ def coord(coord,unit,zero,decimal,pos,dec):
   Y = coord.split('Y')[1]
 
   # DECIMAL
-  if decimal == 'y' and '.' not in coord: return '' # prázdny vystup..
   if decimal == 'y': return coord
 
   # NON-DECIMAL
@@ -158,7 +158,41 @@ M2"""
 # M15 se vyjádří, G00 následuje G01 se stejnou souřadnicí a pohybem Z dolu (obvykle)
 #
 
-# test běhu
+#
+# KONVERZE SOUŘADNIC
+#
+
+while CONV_RUN not in ('y','n'): CONV_RUN = input("Provést konverzi souřadnic? [y/n]: ")
+if CONV_RUN == "y":
+
+  # určení výstupního souboru konverze souřadnic
+  try:
+    out = open(os.path.join(OUTPUT_DIR, OUTPUT_FILE + '.conv'), "w")
+  except:
+    print("Nelze otevřít výstupní soubor koverze.")   
+    sys.exit(1)
+
+  # konverze souřadnic
+  try:
+    with open(os.path.join(INPUT_DIR, INPUT_FILE), "r") as f:
+      for line in f:
+        match = re.match('^.*(X\d+\.?\d+Y\d+\.?\d+).*$', line)# řádek obsahuje numerickou souřadnici XY
+        if match:
+          out.write(re.sub('^.*(X\d+\.?\d+Y\d+\.?\d+).*$', coord(match.group(),unit.zero,decimal,pos,dec), line))
+        else:
+          out.write(line)
+  except:
+    print("Nelze načíst vstupní soubor.")
+
+  # uzavření výstupu
+  out.close()
+  print("Hotovo.")
+  print()
+
+#
+# PŘEVOD G-CODE
+#
+
 while RUN not in ('y','n'): RUN = input("Pokračovat [y/n]: ")
 if RUN == "n": sys.exit(1)
 
@@ -172,6 +206,9 @@ except:
 # zápis hlavičky
 out.write("; " + datetime.now().strftime('%m/%d/%Y %H:%M:%S') + "\n")
 out.write(HEADER)
+
+# nastavení vstupního souboru
+if CONV_RUN == "y": INPUT_FILE = INPUT_FILE + '.conv'
 
 # konverze
 try:
