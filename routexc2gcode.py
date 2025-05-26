@@ -178,7 +178,7 @@ if CONV_RUN == "y":
   try:
     with open(os.path.join(INPUT_DIR, INPUT_FILE), "r") as f:
       for line in f:
-        match = re.match('^(.*)(X\\d+\\.?\\d+Y\\d+\\.?\\d+)(A\\d+)?(.*)$', line)# skupiny podle kulatých závorek
+        match = re.match('^(.*)(X\\d+\\.?\\d+Y\\d+\\.?\\d+)(A\\d+\\.?\\d+)?(.*)$', line)# skupiny podle kulatých závorek
         if match:
           out.write(coord(match,unit,zero,decimal,pos,dec) + "\n")
         else:
