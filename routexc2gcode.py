@@ -27,6 +27,7 @@ RUN=None
 def coord(coord,unit,zero,decimal,pos,dec):
   X = coord.group(2)[1:].split('Y')[0]
   Y = coord.group(2).split('Y')[1]
+  A = coord.group(3)[1:] if coord.group(3) else ''
 
   # DECIMAL
   if decimal == 'y': return coord.group(0)# řádek bez změny
@@ -35,11 +36,15 @@ def coord(coord,unit,zero,decimal,pos,dec):
   if zero == 't':# TRAILING ZERO
     X = X[:-dec] + '.' + X[-dec:]
     Y = Y[:-dec] + '.' + Y[-dec:]
+    if A: A = A[:-dec] + '.' + A[-dec:]
   if zero == 'l':# LEADING ZERO
     X = X[:pos] + '.' + X[pos:]
     Y = Y[:pos] + '.' + Y[pos:]
+    if A: A = A[:pos] + '.' + A[pos:]
 
-  return coord.group(1) + 'X' + str(round(float(X) * unit, 4)) + 'Y' + str(round(float(Y) * unit, 4)) + coord.group(3)
+  if A: A = 'A' + str(round(float(A) * unit, 4))# úprava výstupního A
+
+  return coord.group(1) + 'X' + str(round(float(X) * unit, 4)) + 'Y' + str(round(float(Y) * unit, 4)) + A + coord.group(4)
 
 def oblouk(x1,y1,x2,y2,r,pref):
   # střed úsečky v X
@@ -173,11 +178,11 @@ if CONV_RUN == "y":
   try:
     with open(os.path.join(INPUT_DIR, INPUT_FILE), "r") as f:
       for line in f:
-        match = re.match('^(.*)(X\d+\.?\d+Y\d+\.?\d+)(.*)$', line)# řádek obsahuje numerickou souřadnici XY
+        match = re.match('^(.*)(X\\d+\\.?\\d+Y\\d+\\.?\\d+)(A\\d+)?(.*)$', line)# skupiny podle kulatých závorek
         if match:
-          out.write(coord(match,unit,zero,decimal,pos,dec))
+          out.write(coord(match,unit,zero,decimal,pos,dec) + "\n")
         else:
-          out.write(line)
+          out.write(line + "\n")
   except:
     print("Nelze načíst vstupní soubor.")
 
