@@ -25,26 +25,28 @@ RUN=None
 #
 
 def coord(coord,unit,zero,decimal,pos,dec):
-  X = coord.group(2)[1:].split('Y')[0]
-  Y = coord.group(2).split('Y')[1]
-  A = coord.group(3)[1:] if coord.group(3) else ''
+  X = coord.group(2)[1:] if coord.group(2) else ''
+  Y = coord.group(3)[1:] if coord.group(3) else ''
+  A = coord.group(4)[1:] if coord.group(4) else ''
 
   # DECIMAL
   if decimal == 'y': return coord.group(0)# řádek bez změny
 
   # NON-DECIMAL
   if zero == 't':# TRAILING ZERO
-    X = X[:-dec] + '.' + X[-dec:]
-    Y = Y[:-dec] + '.' + Y[-dec:]
+    if X: X = X[:-dec] + '.' + X[-dec:]
+    if Y: Y = Y[:-dec] + '.' + Y[-dec:]
     if A: A = A[:-dec] + '.' + A[-dec:]
   if zero == 'l':# LEADING ZERO
-    X = X[:pos] + '.' + X[pos:]
-    Y = Y[:pos] + '.' + Y[pos:]
+    if X: X = X[:pos] + '.' + X[pos:]
+    if Y: Y = Y[:pos] + '.' + Y[pos:]
     if A: A = A[:pos] + '.' + A[pos:]
 
-  if A: A = 'A' + str(round(float(A) * unit, 4))# úprava výstupního A
+  if X: X = 'X' + str(round(float(X) * unit, 4))
+  if Y: Y = 'Y' + str(round(float(Y) * unit, 4))
+  if A: A = 'A' + str(round(float(A) * unit, 4))
 
-  return coord.group(1) + 'X' + str(round(float(X) * unit, 4)) + 'Y' + str(round(float(Y) * unit, 4)) + A + coord.group(4)
+  return coord.group(1) + X + Y + A + coord.group(5)
 
 def oblouk(x1,y1,x2,y2,r,pref):
   # střed úsečky v X
@@ -178,7 +180,7 @@ if CONV_RUN == "y":
   try:
     with open(os.path.join(INPUT_DIR, INPUT_FILE), "r") as f:
       for line in f:
-        match = re.match('^(.*)(X\\d+\\.?\\d+Y\\d+\\.?\\d+)(A\\d+\\.?\\d+)?(.*)$', line)# skupiny podle kulatých závorek
+        match = re.match('^(.*)(X\\d?\\.?\\d+)?(Y\\d?\\.?\\d+)?(A\\d?\\.?\\d+)?(.*)$', line)# skupiny podle kulatých závorek
         if match:
           out.write(coord(match,unit,zero,decimal,pos,dec) + "\n")
         else:
