@@ -171,16 +171,16 @@ if CONV_RUN == "y":
     sys.exit(1)
 
   # konverze souřadnic
-#  try:
-  with open(os.path.join(INPUT_DIR, INPUT_FILE), "r") as f:
-    for line in f:
-      match = re.match('^(G..)?((?:[XYA]\\d?\\.?\\d+)+)(.*)$', line)# prefix + vsechna pismena + suffix
-      if match:
-        out.write(coord(match,unit,zero,decimal,pos,dec) + "\n")
-      else:
-        out.write(line + "\n")
-#  except:
-#   print("Nelze načíst vstupní soubor.")
+  try:
+    with open(os.path.join(INPUT_DIR, INPUT_FILE), "r") as f:
+      for line in f:
+        match = re.match('^(G..)?((?:[XYA]\\d?\\.?\\d+)+)(.*)$', line)# prefix + vsechna pismena + suffix
+        if match:
+          out.write(coord(match,unit,zero,decimal,pos,dec) + "\n")
+        else:
+          out.write(line + "\n")
+  except:
+    print("Nelze načíst vstupní soubor.")
 
   # uzavření výstupu
   out.close()
