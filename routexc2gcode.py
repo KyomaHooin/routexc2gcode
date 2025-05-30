@@ -25,28 +25,22 @@ RUN=None
 #
 
 def coord(coord,unit,zero,decimal,pos,dec):
-  X = coord.group(2)[1:] if coord.group(2) else ''
-  Y = coord.group(3)[1:] if coord.group(3) else ''
-  A = coord.group(4)[1:] if coord.group(4) else ''
-
-  # DECIMAL
   if decimal == 'y': return coord.group(0)# řádek bez změny
 
-  # NON-DECIMAL
-  if zero == 't':# TRAILING ZERO
-    if X: X = X[:-dec] + '.' + X[-dec:]
-    if Y: Y = Y[:-dec] + '.' + Y[-dec:]
-    if A: A = A[:-dec] + '.' + A[-dec:]
-  if zero == 'l':# LEADING ZERO
-    if X: X = X[:pos] + '.' + X[pos:]
-    if Y: Y = Y[:pos] + '.' + Y[pos:]
-    if A: A = A[:pos] + '.' + A[pos:]
+  ret = coord.group(1) if coord.group(1) else '' # prefix nebo prázdno
 
-  if X: X = 'X' + str(round(float(X) * unit, 4))
-  if Y: Y = 'Y' + str(round(float(Y) * unit, 4))
-  if A: A = 'A' + str(round(float(A) * unit, 4))
+  for c in re.findall('[XYA]\\d?\\.?\\d+', coord.group(2)):# všechna písmena postupně
+    value = c[1:]
 
-  return coord.group(1) + X + Y + A + coord.group(5)
+    if zero == 't':# traling zero
+      value = val[:-dec] + '.' + value[-dec:]
+    if zero == 'l':# leading zero
+      value = value.ljust((pos + 1), '0')# LZ fix
+      value = value[:pos] + '.' + value[pos:]
+
+    ret = ret + c[0] + str(round(float(value) * unit, 4))# převedené písmeno
+
+  return ret + coord.group(3) # suffix
 
 def oblouk(x1,y1,x2,y2,r,pref):
   # střed úsečky v X
@@ -177,16 +171,16 @@ if CONV_RUN == "y":
     sys.exit(1)
 
   # konverze souřadnic
-  try:
-    with open(os.path.join(INPUT_DIR, INPUT_FILE), "r") as f:
-      for line in f:
-        match = re.match('^(G..)([X|Y]\\d?\\.?\\d+)(Y\\d?\\.?\\d+)?(A\\d?\\.?\\d+)?(.*)$', line)
-        if match:
-          out.write(coord(match,unit,zero,decimal,pos,dec) + "\n")
-        else:
-          out.write(line + "\n")
-  except:
-    print("Nelze načíst vstupní soubor.")
+#  try:
+  with open(os.path.join(INPUT_DIR, INPUT_FILE), "r") as f:
+    for line in f:
+      match = re.match('^(G..)?((?:[XYA]\\d?\\.?\\d+)+)(.*)$', line)# prefix + vsechna pismena + suffix
+      if match:
+        out.write(coord(match,unit,zero,decimal,pos,dec) + "\n")
+      else:
+        out.write(line + "\n")
+#  except:
+#   print("Nelze načíst vstupní soubor.")
 
   # uzavření výstupu
   out.close()
