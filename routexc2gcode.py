@@ -32,8 +32,8 @@ class Coord:
     for c in re.findall('[XYA]\\d?\\.?\\d+', ln):
       setattr(self, c[0], c[1:])# písmeno a numerická část
 
-LAST = Coord()# poslední souřadnice
-NEXT = Coord()# aktuální souřadnice
+LAST = Coord()# instance poslední souřadnice
+NEXT = Coord()# instance aktuální souřadnice
 
 #
 # Funkce
@@ -87,7 +87,7 @@ def arc(x1,y1,x2,y2,r,pref):
   I = centerX - float(x1)
   J = centerY - float(y1)
 
-  return "I" + str(I) + "J" + str(J)
+  return 'I' + str(I) + 'J' + str(J)
 
 #
 # Inicializace
@@ -95,42 +95,42 @@ def arc(x1,y1,x2,y2,r,pref):
 
 print("\nroutexc2gcode " + VERSION + "\n")
 
-INPUT_DIR = input("[*] Název zdrojového adresáře [D:/cnc]: ") or "D:/cnc"
-INPUT_FILE = input("[*] Název zdrojového souboru: ")
+INPUT_DIR = input('[*] Název zdrojového adresáře [D:/cnc]: ') or 'D:/cnc'
+INPUT_FILE = input('[*] Název zdrojového souboru: ')
 
-OUTPUT_DIR = input("[*] Název výstupního adresáře [D:/cnc/gcode]: ") or "D:/cnc/gcode"
-OUTPUT_FILE = input("[*] Název výstupního souboru [test.gcode]: ") or "test.gcode"
+OUTPUT_DIR = input('[*] Název výstupního adresáře [D:/cnc/gcode]: ') or 'D:/cnc/gcode'
+OUTPUT_FILE = input('[*] Název výstupního souboru [test.gcode]: ') or 'test.gcode'
 
 print()
 
-otacky = input("[*] Otáčky vřetene [20000]: ") or "20000"
-feedrate = input("[*] Feedrate [F300]: ") or "F300"
-moveZ = input("[*] Výška přejezdu nad DPS [5]: ") or "5"
-milldepth = input("[*] Hloubka frézování [-2]: ") or "-2"
-nastroj_c = input("[*] Číslo nástroje [1]: ") or "1"
-safeZ = input("[*] Výška zvednutí Z na konci programu [40]: ") or "40"
-chlazeni = input ("[*] Chlazení vřetene y/n? [n]: ") or ""
+otacky = input('[*] Otáčky vřetene [20000]: ') or '20000'
+feedrate = input('[*] Feedrate [F300]: ') or 'F300'
+moveZ = input('[*] Výška přejezdu nad DPS [5]: ') or '5'
+milldepth = input('[*] Hloubka frézování [-2]: ') or '-2'
+nastroj_c = input('[*] Číslo nástroje [1]: ') or '1'
+safeZ = input('[*] Výška zvednutí Z na konci programu [40]: ') or '40'
+chlazeni = input ('[*] Chlazení vřetene y/n? [n]: ') or ''
 
 # Chlazení
-if chlazeni == "y": chlazeni = "M8"
+if chlazeni == 'y': chlazeni = 'M8'
 
 print()
-print("Fromát souřadnic:")
+print('Fromát souřadnic:')
 print()
 
 # Jednotky INCH/METRIC
 unit=None
-while unit not in ('mm','inch'): unit = input("[*] Jednotky [mm/inch]: ")
+while unit not in ('mm','inch'): unit = input('[*] Jednotky [mm/inch]: ')
 unit = 1 if unit == 'mm' else 25.4
 # Zeros LZ/TZ
 zero=None
-while zero not in ('l','t'): zero = input("[*] Vedoucí, nebo koncové nuly? [l/t]: ")
+while zero not in ('l','t'): zero = input('[*] Vedoucí, nebo koncové nuly? [l/t]: ')
 # Decimal
 decimal=None
-while decimal not in ('y','n'): decimal = input ("[*] Desetinná značka? [y/n]: ")
+while decimal not in ('y','n'): decimal = input ('[*] Desetinná značka? [y/n]: ')
 # Čislice
-pos = int(input("[*] Počet celých číslic? [3]: ") or 3)
-dec = int(input("[*] Počet desetinných číslic? [3]: ") or 3)
+pos = int(input('[*] Počet celých číslic? [3]: ') or 3)
+dec = int(input('[*] Počet desetinných číslic? [3]: ') or 3)
 
 print()
 
@@ -162,19 +162,19 @@ M2"""
 # KONVERZE SOUŘADNIC
 #
 
-while CONV_RUN not in ('y','n'): CONV_RUN = input("Provést konverzi souřadnic? [y/n]: ")
-if CONV_RUN == "y":
+while CONV_RUN not in ('y','n'): CONV_RUN = input('Provést konverzi souřadnic? [y/n]: ')
+if CONV_RUN == 'y':
 
   # určení výstupního souboru konverze souřadnic
   try:
-    out = open(os.path.join(INPUT_DIR, INPUT_FILE + '.conv'), "w")
+    out = open(os.path.join(INPUT_DIR, INPUT_FILE + '.conv'), 'w')
   except:
-    print("Nelze otevřít výstupní soubor koverze.")   
+    print('Nelze otevřít výstupní soubor koverze.')   
     sys.exit(1)
 
   # konverze souřadnic
   try:
-    with open(os.path.join(INPUT_DIR, INPUT_FILE), "r") as f:
+    with open(os.path.join(INPUT_DIR, INPUT_FILE), 'r') as f:
       for line in f:
         match = re.match('^(G..)?((?:[XYA]\\d?\\.?\\d+)+)(.*)$', line)# prefix + vsechna pismena + suffix
         if match:
@@ -182,37 +182,37 @@ if CONV_RUN == "y":
         else:
           out.write(line + "\n")
   except:
-    print("Nelze načíst vstupní soubor konverze.")
+    print('Nelze načíst vstupní soubor konverze.')
 
   # uzavření výstupu
   out.close()
-  print("Hotovo.")
+  print('Hotovo.')
   print()
 
 #
 # PŘEVOD G-CODE
 #
 
-while RUN not in ('y','n'): RUN = input("Pokračovat [y/n]: ")
-if RUN == "n": sys.exit(1)
+while RUN not in ('y','n'): RUN = input('Pokračovat [y/n]: ')
+if RUN == 'n': sys.exit(1)
 
 # určení výstupního souboru
 try:
-  out = open(os.path.join(OUTPUT_DIR, OUTPUT_FILE), "w")
+  out = open(os.path.join(OUTPUT_DIR, OUTPUT_FILE), 'w')
 except:
-  print("Nelze otevřít výstupní soubor.")   
+  print('Nelze otevřít výstupní soubor.')
   sys.exit(1)
 
 # zápis hlavičky
-out.write("; " + datetime.now().strftime('%m/%d/%Y %H:%M:%S') + "\n")
+out.write('; ' + datetime.now().strftime('%m/%d/%Y %H:%M:%S') + "\n")
 out.write(HEADER)
 
 # nastavení vstupního souboru
-if CONV_RUN == "y": INPUT_FILE = INPUT_FILE + '.conv'
+if CONV_RUN == 'y': INPUT_FILE = INPUT_FILE + '.conv'
 
 # konverze
 try:
-  with open(os.path.join(INPUT_DIR, INPUT_FILE), "r") as f:
+  with open(os.path.join(INPUT_DIR, INPUT_FILE), 'r') as f:
     for line in f:
       # uložení aktuální souřadnice
       NEXT.update(line)
@@ -235,12 +235,12 @@ try:
       # G02
       #
       if line.startswith('G02'):
-        out.write('G02' + 'X' + NEXT.X + 'Y' + NEXT.Y + 'Z' + milldepth + arc(LAST.X, LAST.Y, NEXT.X, NEXT.Y, NEXT.A, 'G02') + feedrate + "\n")
+        out.write('G02' + 'X' + NEXT.X + 'Y' + NEXT.Y + 'Z' + milldepth + arc(LAST.X,LAST.Y,NEXT.X,NEXT.Y,NEXT.A,'G02') + feedrate + "\n")
       #
       # G03
       #
       if line.startswith('G03'):
-        out.write('G03' + 'X' + NEXT.X + 'Y' + NEXT.Y + 'Z' + milldepth + arc(LAST.X, LAST.Y, NEXT.X, NEXT.Y, NEXT.A, 'G03') + feedrate + "\n")
+        out.write('G03' + 'X' + NEXT.X + 'Y' + NEXT.Y + 'Z' + milldepth + arc(LAST.X,LAST.Y,NEXT.X,NEXT.Y,NEXT.A,'G03') + feedrate + "\n")
       #
       # X* Y*
       #
@@ -259,7 +259,7 @@ try:
       # uložení poslední souřadnice
       LAST.update(line)
 except:
-  print("Nelze načíst vstupní soubor.")
+  print('Nelze načíst vstupní soubor.')
 #except Exception as e:
 #  print('Něco se pokazilo: ' + e.args[0])
 
@@ -269,7 +269,7 @@ out.write(FOOTER)
 # uzavření výstupu
 out.close()
 
-print("Hotovo.")
+print('Hotovo.')
 
 sys.exit(0)
 
