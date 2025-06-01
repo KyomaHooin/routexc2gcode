@@ -176,7 +176,7 @@ if CONV_RUN == 'y':
   try:
     with open(os.path.join(INPUT_DIR, INPUT_FILE), 'r') as f:
       for line in f:
-        match = re.match('^(G..)?((?:[XYA]\\d?\\.?\\d+)+)(.*)$', line)# prefix + vsechna pismena + suffix
+        match = re.match('^(G..)?((?:[XYA]\\d?\\.?\\d+)+)(.*)$', line)# prefix + všechna písmena + suffix
         if match:
           out.write(convert(match,unit,zero,decimal,pos,dec) + "\n")
         else:
