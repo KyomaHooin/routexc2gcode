@@ -47,7 +47,7 @@ def convert(coord,unit,zero,decimal,pos,dec):
   for c in re.findall('[XYA]\\d?\\.?\\d+', coord.group(2)):# všechna písmena postupně
     val = c[1:]# numerická část
 
-    if zero == 't':# traling zero
+    if zero == 't':# trailing zero
       val = val[:-dec] + '.' + val[-dec:]
     if zero == 'l':# leading zero
       val = val.ljust((pos + 1), '0')# LZ fix
@@ -159,14 +159,6 @@ G00 Z""" + safeZ + """
 M2"""
 
 #
-# Hlavní kód
-#
-# pohyb vřetene
-# moveZ ekvivaletní k M16 v Excellonu
-# M15 se vyjádří, G00 následuje G01 se stejnou souřadnicí a pohybem Z dolu (obvykle)
-#
-
-#
 # KONVERZE SOUŘADNIC
 #
 
@@ -190,7 +182,7 @@ if CONV_RUN == "y":
         else:
           out.write(line + "\n")
   except:
-    print("Nelze načíst vstupní soubor.")
+    print("Nelze načíst vstupní soubor konverze.")
 
   # uzavření výstupu
   out.close()
@@ -243,33 +235,22 @@ try:
       # G02
       #
       if line.startswith('G02'):
-        out.write(line[:3] + 'X' + NEXT.X + 'Y' + NEXT.Y + 'Z' + milldepth + arc(LAST.X, LAST.Y, NEXT.X, NEXT.Y, NEXT.A, line[:3]) + feedrate + "\n")
+        out.write('G02' + 'X' + NEXT.X + 'Y' + NEXT.Y + 'Z' + milldepth + arc(LAST.X, LAST.Y, NEXT.X, NEXT.Y, NEXT.A, 'G02') + feedrate + "\n")
       #
       # G03
       #
       if line.startswith('G03'):
-        out.write(line[:3] + 'X' + NEXT.X + 'Y' + NEXT.Y + 'Z' + milldepth + arc(LAST.X, LAST.Y, NEXT.X, NEXT.Y, NEXT.A, line[:3]) + feedrate + "\n")
+        out.write('G03' + 'X' + NEXT.X + 'Y' + NEXT.Y + 'Z' + milldepth + arc(LAST.X, LAST.Y, NEXT.X, NEXT.Y, NEXT.A, 'G03') + feedrate + "\n")
       #
       # X* Y*
       #
       if line.startswith(('X','Y')):
         out.write(line)
       #
-      # M15
-      #
-      #if line.startswith('M15'):
-      #  out.write(milldepth, '; Vřeteno dolu')
-      #  milldepth = 'Z-2'
-      #
       # M16
       #
       if line.startswith('M16'):
         out.write('Z' + moveZ + ' ; Vřeteno nahoru' + "\n")
-      #
-      # G40
-      #
-      #if line.startswith('G40'):
-      #  out.write(line)
       #
       # M30
       #
