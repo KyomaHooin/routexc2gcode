@@ -14,52 +14,62 @@ from datetime import datetime
 # Proměnné
 #
 
-VERSION='1.6'
+VERSION='1.7'
 
-LAST=None # poslední pozice
 CONV_RUN=None
 RUN=None
+
+#
+# Třída
+#
+
+class Coord:
+  def __init__(self):
+    self.X = None
+    self.Y = None
+    self.A = None
+  def update(self, ln):
+    for c in re.findall('[XYA]\\d?\\.?\\d+', ln):
+      setattr(self, c[0], c[1:])# písmeno a numerická část
+
+LAST = Coord()# poslední souřadnice
+NEXT = Coord()# aktuální souřadnice
 
 #
 # Funkce
 #
 
-def coord(coord,unit,zero,decimal,pos,dec):
+def convert(coord,unit,zero,decimal,pos,dec):
   if decimal == 'y': return coord.group(0)# řádek bez změny
 
   ret = coord.group(1) if coord.group(1) else '' # prefix nebo prázdno
 
   for c in re.findall('[XYA]\\d?\\.?\\d+', coord.group(2)):# všechna písmena postupně
-    value = c[1:]
+    val = c[1:]# numerická část
 
     if zero == 't':# traling zero
-      value = val[:-dec] + '.' + value[-dec:]
+      val = val[:-dec] + '.' + val[-dec:]
     if zero == 'l':# leading zero
-      value = value.ljust((pos + 1), '0')# LZ fix
-      value = value[:pos] + '.' + value[pos:]
+      val = val.ljust((pos + 1), '0')# LZ fix
+      val = val[:pos] + '.' + val[pos:]
 
-    ret = ret + c[0] + str(round(float(value) * unit, 4))# převedené písmeno
+    ret = ret + c[0] + str(round(float(val) * unit, 4))# převedené písmeno a numerická část
 
   return ret + coord.group(3) # suffix
 
-def oblouk(x1,y1,x2,y2,r,pref):
-  # střed úsečky v X
-  Sx = (x1 + x2) / 2
+def arc(x1,y1,x2,y2,r,pref):
  
-  # střed úsečky v Y
-  Sy = (y1 + y2) / 2
+  Sx = (float(x1) + float(x2)) / 2 # střed úsečky v X
+  Sy = (float(y1) + float(y2)) / 2 # střed úsečky v Y
  
-  # rozdíl mezi body oblouku v X
-  rozdilX = x2 - x1
- 
-  # rozdíl mezi body oblouku v Y
-  rozdilY = y2 - y1
+  rozdilX = float(x2) - float(x1) # rozdíl mezi body oblouku v X
+  rozdilY = float(y2) - float(y1) # rozdíl mezi body oblouku v Y
  
   # délka poloviční tětivy (střed úsečky mezi koncovými body oblouku, bod "S")
   d = math.sqrt(math.pow(-rozdilX, 2) + rozdilY**2) / 2
  
   # vzdálenost středu oblouku od toho "S" (Pytaghorova věta)
-  h = math.sqrt(r**2 - d**2)
+  h = math.sqrt(float(r)**2 - d**2)
 
   # normalizovaný (jednotkový) normálový vektor
   mikroNX = rozdilY / math.sqrt(math.pow(-rozdilX, 2) + rozdilY**2) # osa X
@@ -74,8 +84,8 @@ def oblouk(x1,y1,x2,y2,r,pref):
     centerY = round(Sy + h * mikroNY, 4)
 
   # výpočet I, J
-  I = centerX - x1
-  J = centerY - y1
+  I = centerX - float(x1)
+  J = centerY - float(y1)
 
   return "I" + str(I) + "J" + str(J)
 
@@ -176,7 +186,7 @@ if CONV_RUN == "y":
       for line in f:
         match = re.match('^(G..)?((?:[XYA]\\d?\\.?\\d+)+)(.*)$', line)# prefix + vsechna pismena + suffix
         if match:
-          out.write(coord(match,unit,zero,decimal,pos,dec) + "\n")
+          out.write(convert(match,unit,zero,decimal,pos,dec) + "\n")
         else:
           out.write(line + "\n")
   except:
@@ -212,74 +222,61 @@ if CONV_RUN == "y": INPUT_FILE = INPUT_FILE + '.conv'
 try:
   with open(os.path.join(INPUT_DIR, INPUT_FILE), "r") as f:
     for line in f:
+      # uložení aktuální souřadnice
+      NEXT.update(line)
       #
       # G00 
       #
-      if line.startswith("G00"):
+      if line.startswith('G00'):
         if line.strip() == 'G00XY': # ošetření výrazu G00XY generovaného FAB3000
-          out.write("G00" + LAST[3:].split('Z')[0].strip() + "\n")          
-          out.write("G01" + LAST[3:].split('Z')[0].strip() + "Z" + milldepth + feedrate + "\n")
+          out.write('G00' + 'X' + LAST.X + 'Y' + LAST.Y + "\n")          
+          out.write('G01' + 'X' + LAST.X + 'Y' + LAST.Y + 'Z' + milldepth + feedrate + "\n")
         else:
           out.write(line)
-          out.write("G01" + line[3:].strip() + "Z" + milldepth + feedrate + "\n")
-          LAST = line # uložení poslední souřadnice
+          out.write('G01' + 'X' + NEXT.X + 'Y' + NEXT.Y + 'Z' + milldepth + feedrate + "\n")
       #
       # G01
       #
-      if line.startswith("G01"):
-        out.write(line.strip() + "Z" + milldepth + feedrate + "\n")
-        LAST = line # uložení poslední souřadnice
+      if line.startswith('G01'):
+        out.write(line.strip() + 'Z' + milldepth + feedrate + "\n")
       #
       # G02
       #
-      if line.startswith("G02"):
-        x1 = float(re.sub('^.*X(.*)Y.*$','\\1', LAST))
-        y1 = float(re.sub('^.*Y(.*)$','\\1', LAST).split('Z')[0].split('A')[0].strip())
-        x2 = float(re.sub('^.*X(.*)Y.*$','\\1', line))
-        y2 = float(re.sub('^.*Y(.*)$','\\1', line).split('A')[0].strip())
-        r = float(re.sub('^.*A(.*)$','\\1', line).strip())
-
-        out.write(line[:3] + "X" + str(x2) + "Y" + str(y2) + "Z" + milldepth + oblouk(x1, y1, x2, y2, r, line[:3]) + feedrate + "\n")
-        LAST = line # uložení poslední souřadnice
+      if line.startswith('G02'):
+        out.write(line[:3] + 'X' + NEXT.X + 'Y' + NEXT.Y + 'Z' + milldepth + arc(LAST.X, LAST.Y, NEXT.X, NEXT.Y, NEXT.A, line[:3]) + feedrate + "\n")
       #
       # G03
       #
-      if line.startswith("G03"):
-        x1 = float(re.sub('^.*X(.*)Y.*$','\\1', LAST))
-        y1 = float(re.sub('^.*Y(.*)$','\\1', LAST).split('Z')[0].split('A')[0].strip())
-        x2 = float(re.sub('^.*X(.*)Y.*$','\\1', line))
-        y2 = float(re.sub('^.*Y(.*)$','\\1', line).split('A')[0].strip())
-        r = float(re.sub('^.*A(.*)$','\\1', line).strip())
-
-        out.write(line[:3] + "X" + str(x2) + "Y" + str(y2) + "Z" + milldepth + oblouk(x1, y1, x2, y2, r, line[:3]) + feedrate + "\n")
-        LAST = line # uložení poslední souřadnice
+      if line.startswith('G03'):
+        out.write(line[:3] + 'X' + NEXT.X + 'Y' + NEXT.Y + 'Z' + milldepth + arc(LAST.X, LAST.Y, NEXT.X, NEXT.Y, NEXT.A, line[:3]) + feedrate + "\n")
       #
       # X* Y*
       #
-      if line.startswith(("X","Y")):
+      if line.startswith(('X','Y')):
         out.write(line)
-        LAST = line # uložení poslední souřadnice
       #
       # M15
       #
-      #if line.startswith("M15"):
-      #  print(milldepth, "; Vřeteno dolu")
-      #  milldepth = "Z-2"
+      #if line.startswith('M15'):
+      #  out.write(milldepth, '; Vřeteno dolu')
+      #  milldepth = 'Z-2'
       #
       # M16
       #
-      if line.startswith("M16"):
-        out.write("Z" + moveZ + " " + "; Vřeteno nahoru\n")
+      if line.startswith('M16'):
+        out.write('Z' + moveZ + ' ; Vřeteno nahoru' + "\n")
       #
       # G40
       #
-      #if line.startswith("G40"):
-      #  print(line.strip())
+      #if line.startswith('G40'):
+      #  out.write(line)
       #
       # M30
       #
-      if line.startswith("M30"):
+      if line.startswith('M30'):
         break
+      # uložení poslední souřadnice
+      LAST.update(line)
 except:
   print("Nelze načíst vstupní soubor.")
 #except Exception as e:
