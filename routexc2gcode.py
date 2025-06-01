@@ -95,10 +95,10 @@ def arc(x1,y1,x2,y2,r,pref):
 
 print("\nroutexc2gcode " + VERSION + "\n")
 
-INPUT_DIR = input('[*] Název zdrojového adresáře [D:/cnc]: ') or '/tmp/routexc2gcode'
+INPUT_DIR = input('[*] Název zdrojového adresáře [D:/cnc]: ') or 'D:/cnc'
 INPUT_FILE = input('[*] Název zdrojového souboru: ')
 
-OUTPUT_DIR = input('[*] Název výstupního adresáře [D:/cnc/gcode]: ') or '/tmp/routexc2gcode'
+OUTPUT_DIR = input('[*] Název výstupního adresáře [D:/cnc/gcode]: ') or 'D:/cnc/gcode'
 OUTPUT_FILE = input('[*] Název výstupního souboru [test.gcode]: ') or 'test.gcode'
 
 print()
