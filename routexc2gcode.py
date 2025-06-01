@@ -32,8 +32,8 @@ class Coord:
     for c in re.findall('[XYA]\\d?\\.?\\d+', ln):
       setattr(self, c[0], c[1:])# písmeno a numerická část
 
-LAST = Coord()# instance poslední souřadnice
-NEXT = Coord()# instance aktuální souřadnice
+NEXT = Coord()# aktuální souřadnice
+LAST = Coord()# poslední souřadnice
 
 #
 # Funkce
@@ -95,10 +95,10 @@ def arc(x1,y1,x2,y2,r,pref):
 
 print("\nroutexc2gcode " + VERSION + "\n")
 
-INPUT_DIR = input('[*] Název zdrojového adresáře [D:/cnc]: ') or 'D:/cnc'
+INPUT_DIR = input('[*] Název zdrojového adresáře [D:/cnc]: ') or '/tmp/routexc2gcode'
 INPUT_FILE = input('[*] Název zdrojového souboru: ')
 
-OUTPUT_DIR = input('[*] Název výstupního adresáře [D:/cnc/gcode]: ') or 'D:/cnc/gcode'
+OUTPUT_DIR = input('[*] Název výstupního adresáře [D:/cnc/gcode]: ') or '/tmp/routexc2gcode'
 OUTPUT_FILE = input('[*] Název výstupního souboru [test.gcode]: ') or 'test.gcode'
 
 print()
