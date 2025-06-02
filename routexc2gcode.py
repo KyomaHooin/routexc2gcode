@@ -77,11 +77,11 @@ def arc(x1,y1,x2,y2,r,pref):
 
   # výpočet X,Y souřadnic středu oblouku
   if pref == 'G02': 
-    centerX = round(Sx + h * mikroNX, 4)
-    centerY = round(Sy - h * mikroNY, 4)
+    centerX = Sx + h * mikroNX
+    centerY = Sy - h * mikroNY
   if pref == 'G03':
-    centerX = round(Sx - h * mikroNX, 4)
-    centerY = round(Sy + h * mikroNY, 4)
+    centerX = Sx - h * mikroNX
+    centerY = Sy + h * mikroNY
 
   # výpočet I, J
   I = round(centerX - float(x1), 4)
@@ -268,7 +268,6 @@ out.write(FOOTER)
 
 # uzavření výstupu
 out.close()
-
 print('Hotovo.')
 
 sys.exit(0)
