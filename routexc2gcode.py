@@ -44,7 +44,7 @@ def convert(coord,unit,zero,decimal,pos,dec):
 
   ret = coord.group(1) if coord.group(1) else '' # prefix nebo prázdno
 
-  for c in re.findall('[XYA]\\d?\\.?\\d+', coord.group(2)):# všechna písmena postupně
+  for c in re.findall('[XYA]\\d*\\.?\\d+', coord.group(2)):# všechna písmena postupně
     val = c[1:]# numerická část
 
     if zero == 't':# trailing zero
