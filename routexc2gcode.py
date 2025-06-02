@@ -14,10 +14,10 @@ from datetime import datetime
 # Proměnné
 #
 
-VERSION='1.7'
+VERSION = '1.7'
 
-CONV_RUN=None
-RUN=None
+CONV_RUN = None
+RUN = None
 
 #
 # Třída
@@ -76,7 +76,7 @@ def arc(x1,y1,x2,y2,r,pref):
   mikroNY = rozdilX / math.sqrt(math.pow(-rozdilX, 2) + rozdilY**2) # osa Y
 
   # výpočet X,Y souřadnic středu oblouku
-  if pref == 'G02': 
+  if pref == 'G02':
     centerX = Sx + h * mikroNX
     centerY = Sy - h * mikroNY
   if pref == 'G03':
@@ -119,11 +119,11 @@ print('Fromát souřadnic:')
 print()
 
 # Jednotky INCH/METRIC
-unit=None
+unit = None
 while unit not in ('mm','inch'): unit = input('[*] Jednotky [mm/inch]: ')
 unit = 1 if unit == 'mm' else 25.4
 # Decimal
-decimal=None
+decimal = None
 while decimal not in ('y','n'): decimal = input ('[*] Desetinná značka? [y/n]: ')
 # LZ/TZ; pos/dec
 zero,pos,dec = None,None,None
@@ -169,7 +169,7 @@ if CONV_RUN == 'y':
   try:
     out = open(os.path.join(INPUT_DIR, INPUT_FILE + '.conv'), 'w')
   except:
-    print('Nelze otevřít výstupní soubor koverze.')   
+    print('Nelze otevřít výstupní soubor koverze.')
     sys.exit(1)
 
   # konverze souřadnic
@@ -221,7 +221,7 @@ try:
       #
       if line.startswith('G00'):
         if line.strip() == 'G00XY': # ošetření výrazu G00XY generovaného FAB3000
-          out.write('G00' + 'X' + LAST.X + 'Y' + LAST.Y + "\n")          
+          out.write('G00' + 'X' + LAST.X + 'Y' + LAST.Y + "\n")
           out.write('G01' + 'X' + LAST.X + 'Y' + LAST.Y + 'Z' + milldepth + feedrate + "\n")
         else:
           out.write(line)
