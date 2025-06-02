@@ -84,8 +84,8 @@ def arc(x1,y1,x2,y2,r,pref):
     centerY = round(Sy + h * mikroNY, 4)
 
   # výpočet I, J
-  I = centerX - float(x1)
-  J = centerY - float(y1)
+  I = round(centerX - float(x1), 4)
+  J = round(centerY - float(y1), 4)
 
   return 'I' + str(I) + 'J' + str(J)
 
@@ -103,7 +103,7 @@ OUTPUT_FILE = input('[*] Název výstupního souboru [test.gcode]: ') or 'test.g
 
 print()
 
-otacky = input('[*] Otáčky vřetene [20000]: ') or '20000'
+otacky = input('[*] Otáčky vřetene [17500]: ') or '17500'
 feedrate = input('[*] Feedrate [F300]: ') or 'F300'
 moveZ = input('[*] Výška přejezdu nad DPS [5]: ') or '5'
 milldepth = input('[*] Hloubka frézování [-2]: ') or '-2'
@@ -122,15 +122,15 @@ print()
 unit=None
 while unit not in ('mm','inch'): unit = input('[*] Jednotky [mm/inch]: ')
 unit = 1 if unit == 'mm' else 25.4
-# Zeros LZ/TZ
-zero=None
-while zero not in ('l','t'): zero = input('[*] Vedoucí, nebo koncové nuly? [l/t]: ')
 # Decimal
 decimal=None
 while decimal not in ('y','n'): decimal = input ('[*] Desetinná značka? [y/n]: ')
-# Čislice
-pos = int(input('[*] Počet celých číslic? [3]: ') or 3)
-dec = int(input('[*] Počet desetinných číslic? [3]: ') or 3)
+# LZ/TZ; pos/dec
+zero,pos,dec = None,None,None
+if decimal == 'n':
+  while zero not in ('l','t'): zero = input('[*] Vedoucí, nebo koncové nuly? [l/t]: ')
+  pos = int(input('[*] Počet celých číslic? [3]: ') or 3)
+  dec = int(input('[*] Počet desetinných číslic? [3]: ') or 3)
 
 print()
 
@@ -235,12 +235,12 @@ try:
       # G02
       #
       if line.startswith('G02'):
-        out.write('G02' + 'X' + NEXT.X + 'Y' + NEXT.Y + 'Z' + milldepth + arc(LAST.X,LAST.Y,NEXT.X,NEXT.Y,NEXT.A,'G02') + feedrate + "\n")
+        out.write('G02' + 'X' + NEXT.X + 'Y' + NEXT.Y + arc(LAST.X,LAST.Y,NEXT.X,NEXT.Y,NEXT.A,'G02') + feedrate + "\n")
       #
       # G03
       #
       if line.startswith('G03'):
-        out.write('G03' + 'X' + NEXT.X + 'Y' + NEXT.Y + 'Z' + milldepth + arc(LAST.X,LAST.Y,NEXT.X,NEXT.Y,NEXT.A,'G03') + feedrate + "\n")
+        out.write('G03' + 'X' + NEXT.X + 'Y' + NEXT.Y + arc(LAST.X,LAST.Y,NEXT.X,NEXT.Y,NEXT.A,'G03') + feedrate + "\n")
       #
       # X* Y*
       #
