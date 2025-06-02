@@ -29,7 +29,7 @@ class Coord:
     self.Y = None
     self.A = None
   def update(self, ln):
-    for c in re.findall('[XYA]\\d?\\.?\\d+', ln):
+    for c in re.findall('[XYA]\\d*\\.?\\d+', ln):
       setattr(self, c[0], c[1:])# písmeno a numerická část
 
 NEXT = Coord()# aktuální souřadnice
@@ -58,7 +58,7 @@ def convert(coord,unit,zero,decimal,pos,dec):
   return ret + coord.group(3) # suffix
 
 def arc(x1,y1,x2,y2,r,pref):
- 
+
   Sx = (float(x1) + float(x2)) / 2 # střed úsečky v X
   Sy = (float(y1) + float(y2)) / 2 # střed úsečky v Y
  
@@ -76,10 +76,10 @@ def arc(x1,y1,x2,y2,r,pref):
   mikroNY = rozdilX / math.sqrt(math.pow(-rozdilX, 2) + rozdilY**2) # osa Y
 
   # výpočet X,Y souřadnic středu oblouku
-  if 'G02' in pref: 
+  if pref == 'G02': 
     centerX = round(Sx + h * mikroNX, 4)
     centerY = round(Sy - h * mikroNY, 4)
-  if 'G03' in pref:
+  if pref == 'G03':
     centerX = round(Sx - h * mikroNX, 4)
     centerY = round(Sy + h * mikroNY, 4)
 
@@ -176,11 +176,11 @@ if CONV_RUN == 'y':
   try:
     with open(os.path.join(INPUT_DIR, INPUT_FILE), 'r') as f:
       for line in f:
-        match = re.match('^(G..)?((?:[XYA]\\d?\\.?\\d+)+)(.*)$', line)# prefix + všechna písmena + suffix
+        match = re.match('^(G..)?((?:[XYA]\\d*\\.?\\d+)+)(.*)$', line)# prefix + všechna písmena + suffix
         if match:
           out.write(convert(match,unit,zero,decimal,pos,dec) + "\n")
         else:
-          out.write(line + "\n")
+          out.write(line)
   except:
     print('Nelze načíst vstupní soubor konverze.')
 
