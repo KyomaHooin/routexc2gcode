@@ -260,8 +260,6 @@ try:
       LAST.update(line)
 except:
   print('Nelze načíst vstupní soubor.')
-#except Exception as e:
-#  print('Něco se pokazilo: ' + e.args[0])
 
 # zápis patičky
 out.write(FOOTER)
