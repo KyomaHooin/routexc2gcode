@@ -1,0 +1,30 @@
+; ========================================
+; www.numericalinnovations.com
+; Numerical Innovations - Layer Information
+; Units: Metric
+; Purpose: Rout/Mill
+; Digits=3:4
+; ========================================
+M48
+METRIC,LZ
+VER,1
+FMAT,2
+;FILE_FORMAT=3:4
+T01C4.5
+T02C1.5
+T03C0.2
+T04C2.0
+DETECT,ON
+ATC,ON
+%
+G90
+T04
+G00X-001Y-001
+G40
+M15
+G01X555
+Y271
+X-001
+Y-001
+M16
+M30

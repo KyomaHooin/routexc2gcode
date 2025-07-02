@@ -29,7 +29,7 @@ class Coord:
     self.Y = None
     self.A = None
   def update(self, ln):
-    for c in re.findall('[XYA]\\-?\\d*\\.?\\d+', ln):
+    for c in re.findall('[XYA]-?\\d*\\.?\\d+', ln):
       setattr(self, c[0], c[1:])# písmeno a numerická část
 
 NEXT = Coord()# aktuální souřadnice
@@ -44,13 +44,14 @@ def convert(coord,unit,zero,decimal,pos,dec):
 
   ret = coord.group(1) if coord.group(1) else '' # prefix nebo prázdno
 
-  for c in re.findall('[XYA]\\d*\\.?\\d+', coord.group(2)):# všechna písmena postupně
+  for c in re.findall('[XYA]-?\\d*\\.?\\d+', coord.group(2)):# všechna písmena postupně
     val = c[1:]# numerická část
 
     if zero == 't':# trailing zero
       val = val[:-dec] + '.' + val[-dec:]
     if zero == 'l':# leading zero
-      val = val.ljust((pos + 1), '0')# LZ fix
+      if '-' in val: pos = pos + 1
+      val = val.zfill(pos)# LZ fix
       val = val[:pos] + '.' + val[pos:]
 
     ret = ret + c[0] + str(round(float(val) * unit, 4))# převedené písmeno a numerická část
@@ -176,7 +177,7 @@ if CONV_RUN == 'y':
   try:
     with open(os.path.join(INPUT_DIR, INPUT_FILE), 'r') as f:
       for line in f:
-        match = re.match('^(G..)?((?:[XYA]\\d*\\.?\\d+)+)(.*)$', line)# prefix + všechna písmena + suffix
+        match = re.match('^(G..)?((?:[XYA]-?\\d*\\.?\\d+)+)(.*)$', line)# prefix + všechna písmena + suffix
         if match:
           out.write(convert(match,unit,zero,decimal,pos,dec) + "\n")
         else:
